@@ -9,8 +9,8 @@ const Profile = () => {
   const { id } = useParams();
   const {
     data: { data },
-  } = useAxios({ url: `/users/${id}`, method: "get" });
-
+  } = useAxios({ url: `/student/${id}`, method: "get" });
+  console.log(data);
   return (
     <section className="" style={{ backgroundColor: "#fff" }}>
       <div className="py-5 mt-5">
@@ -61,22 +61,16 @@ const Profile = () => {
             <div className="flex flex-col gap-4 text-primary">
               <strong>First Name:</strong>
               <strong>Last Name:</strong>
-              <strong>Age:</strong>
-              <strong>Username:</strong>
-              <strong>Role:</strong>
-              <strong>Total Guides:</strong>
-              <strong>Todo Guides:</strong>
-              <strong>Read Guides:</strong>
+              <strong>Group Name:</strong>
+              <strong>Phone:</strong>
+              <strong>Status:</strong>
             </div>
             <div className="flex flex-col gap-4 text-primary">
               <strong>{data?.first_name}</strong>
               <strong>{data?.last_name}</strong>
-              <strong>{data?.age}</strong>
-              <strong>{data?.username}</strong>
-              <strong>{data?.role}</strong>
-              <strong>{data?.total_guides}</strong>
-              <strong>{data?.todo_guides}</strong>
-              <strong>{data?.read_guides}</strong>
+              <strong>{data?.group.title}</strong>
+              <strong>{data?.phone_number}</strong>
+              <strong>{data?.status}</strong>
             </div>
           </div>
         </div>

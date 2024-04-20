@@ -19,34 +19,32 @@ function App() {
   const dispatch = useDispatch();
   const token = loadState("token");
   const user = token && jwtDecode(token);
-  const { data, refetch } = useAxios({ url: "/users/me", method: "get" });
-  React.useEffect(() => {
-    dispatch(userTodoGuide(data.data?.todo_guides));
-    if (!token) return navigate("/login");
-    dispatch(jwtToken(user?.user));
-  }, [data, token]);
+  // const { data, refetch } = useAxios({ url: "/users/me", method: "get" });
+  // React.useEffect(() => {
+  //   dispatch(userTodoGuide(data.data?.todo_guides));
+  //   if (!token) return navigate("/login");
+  //   dispatch(jwtToken(user?.user));
+  // }, [data, token]);
   return (
     <>
       <Routes>
         <Route path="/" element={<MainLayout />}>
           <Route path="/" element={<Navigate to="/profile/me" />} />
-          <Route path="/login" element={<Login refetchData={refetch} />} />
+          {/* <Route path="/login" element={<Login refetchData={refetch} />} /> */}
           <Route path="/profile/me" element={<ProfileMe />} />
-          {user?.user.role === "admin" ? (
-            <Route path="/users" element={<User />} />
-          ) : null}
+          <Route path="/users" element={<User />} />
           {user?.user.role === "admin" ? (
             <Route path="/users/:id" element={<Profile />} />
           ) : null}
           <Route path="/guides" element={<Guides />} />
-          <Route
+          {/* <Route
             path="/guides/:guide_id"
             element={<ShowGuide refetchData={refetch} />}
-          />
-          <Route
+          /> */}
+          {/* <Route
             path="/notification"
             element={<Notification refetchData={refetch} />}
-          />
+          /> */}
         </Route>
         <Route
           path="*"

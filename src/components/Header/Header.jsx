@@ -11,7 +11,7 @@ const Header = () => {
   return (
     <div
       style={{ background: "#F6FAFD" }}
-      className="sticky top-0 z-10 shadow-md"
+      className="sticky top-0 z-10 border-b"
     >
       <div className="container mx-auto h-16 text-primary text-2xl font-extrabold flex justify-between items-center">
         <h2>
@@ -23,11 +23,7 @@ const Header = () => {
           <Button
             onClick={() => dispatch(openState(true))}
             sx={{
-              display:
-                user?.role === "admin" && location.pathname == "/users"
-                  ? "block"
-                  : "none",
-              background: "#4b48e2",
+              background: "#514EF3",
               ":hover": { background: "#514eec" },
               borderRadius: "70px",
               paddingX: "20px",

@@ -33,8 +33,8 @@ const User = () => {
   const [showUser, setShowUser] = React.useState({ isOpen: false });
 
   const [filterAndSort, setFilterAndSort] = React.useState({
-    role: "all",
-    by: "id",
+    status: "all",
+    by: "created_at",
     order: "desc",
     q: "",
   });
@@ -42,11 +42,16 @@ const User = () => {
   const [page, setPage] = React.useState(1);
 
   const { data, loading, refetch } = useAxios({
-    url: `/users?page[offset]=${page}&page[limit]=${row}&q=${
+    url: `/student?page[offset]=${page}&page[limit]=${row}&q=${
       filterAndSort.q
-    }&sort[by]=${filterAndSort.by}&sort[order]=${filterAndSort.order}${
-      filterAndSort.role === "all" ? "" : `&filters[role]=${filterAndSort.role}`
+    }&sort[by]=${
+      filterAndSort.by
+    }&sort[order]=${filterAndSort.order.toUpperCase()}${
+      filterAndSort.status === "all"
+        ? ""
+        : `&filters[status]=${filterAndSort.status}`
     }`,
+    // {{base_url}}/student?page[limit]=3&page[offset]=1&filters[status]=ACTIVE&sort[by]=created_at&sort[order]=ASC&search=john
     method: "get",
   });
   async function showData(id) {
@@ -77,205 +82,97 @@ const User = () => {
         </div>
       </div>
 
-      <TableContainer component={Paper}>
-        <Table sx={{ minWidth: 650 }} aria-label="simple table">
-          <TableHead>
-            <TableRow>
-              <TableCell
-                sx={{ fontSize: 16, fontWeight: 800, color: "#092C4C" }}
-                align="left"
-              >
-                #ID
-              </TableCell>
-              <TableCell
-                sx={{ fontSize: 16, fontWeight: 800, color: "#092C4C" }}
-                align="center"
-              >
-                First Name
-              </TableCell>
-              <TableCell
-                sx={{ fontSize: 16, fontWeight: 800, color: "#092C4C" }}
-                align="center"
-              >
-                Last Name
-              </TableCell>
-              <TableCell
-                sx={{ fontSize: 16, fontWeight: 800, color: "#092C4C" }}
-                align="center"
-              >
-                Age
-              </TableCell>
-              <TableCell
-                sx={{ fontSize: 16, fontWeight: 800, color: "#092C4C" }}
-                align="center"
-              >
-                Username
-              </TableCell>
-              <TableCell
-                sx={{ fontSize: 16, fontWeight: 800, color: "#092C4C" }}
-                align="center"
-              >
-                Role
-              </TableCell>
-              <TableCell
-                sx={{ fontSize: 16, fontWeight: 800, color: "#092C4C" }}
-                align="center"
-              >
-                Action
-              </TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {data.data?.map((item, index) => (
-              <TableRow
-                key={item.id}
-                sx={{
-                  "&:last-child td, &:last-child th": { border: 0 },
-                }}
-              >
-                <TableCell
-                  sx={{
-                    fontSize: 16,
-                    fontWeight: 600,
-                    color: "#092C4C",
-                    paddingY: 0.8,
+      <table className="min-w-max w-full table-auto">
+        <thead>
+          <tr className="text-lg text-primary font-bold">
+            <th>#ID</th>
+            <th>First Name</th>
+            <th>Last Name</th>
+            <th>Group Name</th>
+            <th>Phone Number</th>
+            <th>Balance</th>
+            <th>Status</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody className="divide-y divide-gray-200 text-base font-semibold text-primary text-center">
+          {data.data.data?.map((item, index) => (
+            <tr key={item.id}>
+              <td className="py-3">{index + 1}</td>
+              <td className="py-3">{item.first_name}</td>
+              <td className="py-3">{item.last_name}</td>
+              <td className="py-3">{item.group?.title}</td>
+              <td className="py-3">{item.phone_number}</td>
+              <td className="py-3">{item.balance}</td>
+              <td className="py-3">{item.status}</td>
+              <td className="py-3flex space-x-2">
+                <IconButton
+                  onClick={() => {
+                    navigate(`/users/${item.id}`);
                   }}
-                  align="left"
-                >
-                  {index + 1}
-                </TableCell>
-                <TableCell
+                  aria-label="view"
+                  size="medium"
                   sx={{
-                    fontSize: 16,
-                    fontWeight: 600,
-                    color: "#092C4C",
-                    paddingY: 0.8,
-                  }}
-                  align="center"
-                >
-                  {item.first_name}
-                </TableCell>
-                <TableCell
-                  sx={{
-                    fontSize: 16,
-                    fontWeight: 600,
-                    color: "#092C4C",
-                    paddingY: 0.8,
-                  }}
-                  align="center"
-                >
-                  {item.last_name}
-                </TableCell>
-                <TableCell
-                  sx={{
-                    fontSize: 16,
-                    fontWeight: 600,
-                    color: "#092C4C",
-                    paddingY: 0.8,
-                  }}
-                  align="center"
-                >
-                  {item.age}
-                </TableCell>
-                <TableCell
-                  sx={{
-                    fontSize: 16,
-                    fontWeight: 600,
-                    color: "#092C4C",
-                    paddingY: 0.8,
-                  }}
-                  align="center"
-                >
-                  {item.username}
-                </TableCell>
-                <TableCell
-                  sx={{
-                    fontSize: 16,
-                    fontWeight: 600,
-                    color: "#092C4C",
-                    paddingY: 0.8,
-                  }}
-                  align="center"
-                >
-                  {item.role}
-                </TableCell>
-                <TableCell
-                  sx={{
-                    fontSize: 14,
-                    fontWeight: 600,
-                    color: "#092C4C",
-                    paddingY: 0.8,
-                  }}
-                  align="center"
-                >
-                  <IconButton
-                    onClick={() => {
-                      navigate(`/users/${item.id}`);
-                    }}
-                    aria-label="view"
-                    size="medium"
-                    sx={{
-                      width: "35px",
-                      height: "35px",
-                      border: "1px solid #EAEEF4",
-                      "&:hover": {
-                        backgroundColor: "#514EF3",
-                        "& > img": {
-                          filter: "brightness(2000%)",
-                        },
+                    width: "35px",
+                    height: "35px",
+                    border: "1px solid #EAEEF4",
+                    "&:hover": {
+                      backgroundColor: "#514EF3",
+                      "& > img": {
+                        filter: "brightness(2000%)",
                       },
-                    }}
-                  >
-                    <img src={iconView} alt="" />
-                  </IconButton>
-                  <IconButton
-                    onClick={() => {
-                      showData(item.id);
-                    }}
-                    aria-label="edit"
-                    size="medium"
-                    sx={{
-                      mx: 1,
-                      width: "35px",
-                      height: "35px",
-                      border: "1px solid #EAEEF4",
-                      "&:hover": {
-                        backgroundColor: "#514EF3",
-                        "& > img": {
-                          filter: "brightness(2000%)",
-                        },
+                    },
+                  }}
+                >
+                  <img src={iconView} alt="" />
+                </IconButton>
+                <IconButton
+                  onClick={() => {
+                    showData(item.id);
+                  }}
+                  aria-label="edit"
+                  size="medium"
+                  sx={{
+                    mx: 1,
+                    width: "35px",
+                    height: "35px",
+                    border: "1px solid #EAEEF4",
+                    "&:hover": {
+                      backgroundColor: "#514EF3",
+                      "& > img": {
+                        filter: "brightness(2000%)",
                       },
-                    }}
-                  >
-                    <img src={iconEdit} alt="" />
-                  </IconButton>
-                  <IconButton
-                    sx={{
-                      width: "35px",
-                      height: "35px",
-                      border: "1px solid #EAEEF4",
-                      "&:hover": {
-                        backgroundColor: "#514EF3",
-                        "& > img": {
-                          filter: "brightness(2000%)",
-                        },
+                    },
+                  }}
+                >
+                  <img src={iconEdit} alt="" />
+                </IconButton>
+                <IconButton
+                  sx={{
+                    width: "35px",
+                    height: "35px",
+                    border: "1px solid #EAEEF4",
+                    "&:hover": {
+                      backgroundColor: "#514EF3",
+                      "& > img": {
+                        filter: "brightness(2000%)",
                       },
-                    }}
-                    onClick={() => {
-                      axios.delete(`/users/${item.id}`);
-                      refetch();
-                    }}
-                    aria-label="delete"
-                    size="medium"
-                  >
-                    <img src={iconDelete} alt="" />
-                  </IconButton>
-                </TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </TableContainer>
+                    },
+                  }}
+                  onClick={() => {
+                    axios.delete(`/users/${item.id}`);
+                    refetch();
+                  }}
+                  aria-label="delete"
+                  size="medium"
+                >
+                  <img src={iconDelete} alt="" />
+                </IconButton>
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
       <div align="center" className="flex justify-center items-center py-2">
         <Stack spacing={2}>
           <Pagination

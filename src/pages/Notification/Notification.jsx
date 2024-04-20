@@ -30,7 +30,7 @@ const SelectStyle = {
   },
 };
 
-const Notification = ({refetchData}) => {
+const Notification = ({ refetchData }) => {
   const [filter, setFilter] = React.useState("all");
   const [row, setRow] = React.useState(5);
   const [page, setPage] = React.useState(1);

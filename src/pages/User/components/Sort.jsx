@@ -22,7 +22,7 @@ const SelectStyle = {
 
 const Sort = ({ filterAndSort, setFilterAndSort }) => {
   function cleaning() {
-    setFilterAndSort({ by: "id", order: "desc", role: "all", q: "" });
+    setFilterAndSort({ by: "created_at", order: "desc", status: "all", q: "" });
   }
   return (
     <div className="flex items-end gap-3">
@@ -64,8 +64,8 @@ const Sort = ({ filterAndSort, setFilterAndSort }) => {
             setFilterAndSort({ ...filterAndSort, by: event.target.value })
           }
         >
-          <MenuItem value={"id"}>Id</MenuItem>
-          <MenuItem value={"age"}>Age</MenuItem>
+          <MenuItem value={"created_at"}>Create Time</MenuItem>
+          <MenuItem value={"first_name"}>First Name</MenuItem>
         </Select>
       </FormControl>
 
@@ -87,14 +87,16 @@ const Sort = ({ filterAndSort, setFilterAndSort }) => {
         <p className="ml-4 font-semibold text-primary">Filter</p>
         <Select
           sx={SelectStyle}
-          value={filterAndSort.role}
+          value={filterAndSort.status}
           onChange={(event) =>
-            setFilterAndSort({ ...filterAndSort, role: event.target.value })
+            setFilterAndSort({ ...filterAndSort, status: event.target.value })
           }
         >
           <MenuItem value={"all"}>All</MenuItem>
-          <MenuItem value={"admin"}>Admin</MenuItem>
-          <MenuItem value={"employee"}>Employee</MenuItem>
+          <MenuItem value={"ATTENDING"}>Attending</MenuItem>
+          <MenuItem value={"PENDING"}>Pending</MenuItem>
+          <MenuItem value={"SUSPENDED"}>Suspended</MenuItem>
+          <MenuItem value={"COMPLETED"}>Completed</MenuItem>
         </Select>
       </FormControl>
 

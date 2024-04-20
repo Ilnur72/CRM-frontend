@@ -18,7 +18,7 @@ const Sidebar = () => {
   let links = [
     { img: profileIcon, link: "Profile", url: `/profile/me` },
     { img: userIcon, link: "User", url: "/users" },
-    { img: guideIcon, link: "Guide", url: "/guides" },
+    { img: guideIcon, link: "Groups", url: "/guides" },
     { img: nofiocationIcon, link: "Notification", url: `/notification` },
   ];
   return (
@@ -68,9 +68,10 @@ const Sidebar = () => {
                       sx={{
                         width: "55px",
                         height: "55px",
-                        boxShadow:
-                          " 5px 5px 10px #c5c5c5, -5px -5px 10px #fbfbfb",
+                        // boxShadow:
+                        //   " 5px 5px 10px #c5c5c5, -5px -5px 10px #fbfbfb",
                         borderRadius: "50%",
+                        border: "1px solid #EAEEF4",
                         background: isActive ? "#514EF3" : "#fff",
                         transition: "all 0.4s",
                         zIndex: 1,
@@ -113,7 +114,8 @@ const Sidebar = () => {
         <IconButton
           sx={{
             background: "#fff",
-            boxShadow: " 5px 5px 10px #c5c5c5, -5px -5px 10px #fbfbfb",
+            // boxShadow: " 5px 5px 10px #c5c5c5, -5px -5px 10px #fbfbfb",
+            border: "1px solid #EAEEF4",
             width: "55px",
             height: "55px",
             borderRadius: "50%",

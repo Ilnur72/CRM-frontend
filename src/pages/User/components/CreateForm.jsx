@@ -1,45 +1,44 @@
-import {
-  Button,
-  FormControl,
-  IconButton,
-  InputAdornment,
-  InputLabel,
-  MenuItem,
-  Select,
-  TextField,
-} from "@mui/material";
+import { Button, IconButton } from "@mui/material";
 import Modal from "@mui/material/Modal";
 import axios from "axios";
 import React from "react";
-import { useForm } from "react-hook-form";
+import { Controller, useForm } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
 import { toast } from "react-toastify";
-import Visibility from "../../../assets/visibility.svg";
-import VisibilityOff from "../../../assets/visibilityOff.svg";
 import { openState } from "../../../store/openStateSlice";
+import { useAxios } from "../../../hooks/useAxios";
+import { Select, Option } from "@material-tailwind/react";
 
+const inputStyle = `pl-4 w-full h-10 rounded-lg bg-grey10
+border border-grey30 outline-none text-primary`;
 const CreateForm = ({ refetch }) => {
   const dispatch = useDispatch();
-  const [showPassword, setShowPassword] = React.useState(false);
   const { isOpen } = useSelector((state) => state.openState);
-
+  const {
+    data: { data },
+    loading,
+  } = useAxios({ url: "/group", method: "get" });
   const {
     register,
     handleSubmit,
+    setValue,
     reset,
-    formState: { errors },
+    control,
   } = useForm();
 
   const submit = async (formData) => {
     try {
-      await axios.post("/users", {
+      if (formData.group_id === "PENDING") {
+        delete formData.group_id;
+        formData.status = "ATTENDING";
+      }
+      await axios.post("/student", {
         ...formData,
-        age: Number(formData.age),
+        status:
+          formData.group_id === "PENDING" ? formData.group_id : "ATTENDING",
       });
-
       toast.success("Foydalanuvchi muvaffaqiyatli qo'shildi.");
       dispatch(openState(false));
-      setShowPassword(false);
       reset();
       refetch();
     } catch (error) {
@@ -53,7 +52,7 @@ const CreateForm = ({ refetch }) => {
       }
     }
   };
-
+  if (loading) return;
   return (
     <Modal
       hideBackdrop={false}
@@ -63,92 +62,89 @@ const CreateForm = ({ refetch }) => {
     >
       <form
         onSubmit={handleSubmit(submit)}
-        className="bg-white absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 flex flex-col gap-3 w-96 p-10 rounded-xl "
+        className="bg-white absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 flex flex-col gap-3 w-96 p-8 rounded-xl "
       >
-        <h2 className="text-2xl text-center text-primary font-bold">
-          Create User
-        </h2>
-        <TextField
-          {...register("first_name", { required: true })}
-          InputProps={{ style: { borderRadius: "25px" } }}
-          variant="outlined"
-          size="small"
-          label="First Name"
-        />
-        <TextField
-          {...register("last_name", { required: true })}
-          InputProps={{ style: { borderRadius: "25px" } }}
-          variant="outlined"
-          size="small"
-          label="Last Name"
-        />
-        <TextField
-          {...register("age", { required: true })}
-          InputProps={{ style: { borderRadius: "25px" } }}
-          type="number"
-          variant="outlined"
-          size="small"
-          label="Age"
-        />
-        <FormControl size="small">
-          <InputLabel id="demo-simple-select-label">Role</InputLabel>
-          <Select
-            {...register("role")}
-            labelId="demo-simple-select-label"
-            label="Role"
-            sx={{ borderRadius: "25px" }}
-          >
-            <MenuItem value={"admin"}>Admin</MenuItem>
-            <MenuItem value={"employee"}>Employee</MenuItem>
-          </Select>
-        </FormControl>
-        <TextField
-          {...register("username", { required: true })}
-          InputProps={{ style: { borderRadius: "25px" } }}
-          variant="outlined"
-          size="small"
-          label="Username"
-        />
-
-        <TextField
-          {...register("password", {
-            required: true,
-          })}
-          InputProps={{
-            style: { borderRadius: "25px" },
-            endAdornment: (
-              <InputAdornment position="end">
-                <IconButton
-                  aria-label="toggle password visibility"
-                  onClick={() => setShowPassword(!showPassword)}
-                  edge="end"
-                >
-                  <img
-                    width={20}
-                    src={showPassword ? VisibilityOff : Visibility}
-                    alt=""
-                  />
-                </IconButton>
-              </InputAdornment>
-            ),
-          }}
-          size="small"
-          label="password"
-          type={showPassword ? "text" : "password"}
-          color={errors.password ? "error" : "info"}
-        />
-        <div className="flex justify-end gap-3">
-          <Button
+        <div className="flex justify-between items-center ">
+          <h2 className="text-2xl text-center text-primary font-bold">
+            Create User
+          </h2>
+          <IconButton
             onClick={() => {
               dispatch(openState(false));
               reset();
             }}
-            color="inherit"
+            sx={{
+              background: "#7E92A2",
+              ":hover": { bgcolor: "#7E92A2" },
+            }}
+            className="w-4 h-4 rounded-full bg-grey70"
+          >
+            <i className="fa-solid text-xs text-white fa-xmark"></i>
+          </IconButton>
+        </div>
+        <div>
+          <label className="text-primary">First Name</label>
+          <input
+            {...register("first_name", { required: true })}
+            placeholder="First Name"
+            className={inputStyle}
+            type="text"
+          />
+        </div>
+        <input
+          {...register("last_name", { required: true })}
+          placeholder="Last Name"
+          className={inputStyle}
+          type="text"
+        />
+        <input
+          {...register("phone_number", { required: true })}
+          placeholder="Phone"
+          className={inputStyle}
+          type="text"
+        />
+
+        <Controller
+          name="group_id"
+          control={control}
+          defaultValue="PENDING"
+          render={({ field: { onChange, ...field } }) => (
+            <Select
+              className="bg-grey10 border border-grey30 focus:border-grey30 text-primary"
+              labelProps={{
+                className: "after:border-none before:border-none",
+              }}
+              onChange={(event) => {
+                setValue("group_id", event);
+              }}
+              {...field}
+              selected={(element) => {
+                return element;
+              }}
+            >
+              <Option value="PENDING" className="bg-grey10 text-primary">
+                Undecided
+              </Option>
+              {data.data.map((group, i) => {
+                return (
+                  <Option
+                    value={group.id}
+                    className="bg-grey10 text-primary"
+                    key={i}
+                  >
+                    {group.title}
+                  </Option>
+                );
+              })}
+            </Select>
+          )}
+        />
+        <div className="flex justify-end gap-3">
+          <Button
+            sx={{ background: "#514EF3", borderRadius: 24 }}
+            type="submit"
             variant="contained"
           >
-            Cancel
-          </Button>
-          <Button type="submit" variant="contained">
             Submit
           </Button>
         </div>
